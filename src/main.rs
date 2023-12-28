@@ -69,4 +69,11 @@ pub mod test {
 
         assert_eq!("10", run_ast(&build_ast(&input)));
     }
+
+    #[test]
+    fn assign_operation() {
+        let input = "let x = 25";
+
+        assert_eq!("25", run_ast(&build_ast(&input)));
+    }
 }

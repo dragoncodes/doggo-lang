@@ -1,11 +1,26 @@
-%start Nodes
+%start Expressions
 %avoid_insert "INTEGER"
 %%
 
-Nodes -> Result<Vec<Node>, ()>:
-    Nodes Node { flattenr($1, $2) }
+Expressions -> Result<Vec<Node>, ()>:
+  Expressions Expression { flattenr($1, $2) }
   | { Ok(vec![]) }
   ;
+
+Expression -> Result<Node, ()>:
+    Assignment { $1 }
+  | Node { $1 }
+  ;
+
+Assignment -> Result<Node, ()>:
+    'LET' 'ID' 'EQ' Expression {
+        Ok(Node::Assign {
+            id: $lexer.span_str($2.unwrap().span()).to_string(), 
+            expr: Box::new($4?) 
+        })
+    }
+  ;
+
 
 Node -> Result<Node, ()>:
       Node 'ADD' Term {

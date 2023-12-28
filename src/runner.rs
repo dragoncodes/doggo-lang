@@ -2,6 +2,8 @@ use crate::ast;
 use itertools::*;
 
 pub fn run_ast(ast: &Vec<ast::Node>) -> String {
+    let mut assignments = Vec::new();
+
     ast.iter()
         .map(|node| match node {
             ast::Node::Add { left, right } => {
@@ -27,7 +29,16 @@ pub fn run_ast(ast: &Vec<ast::Node>) -> String {
 
                 format!("{}", left / right)
             }
+
             ast::Node::Number { value } => format!("{}", value),
+
+            ast::Node::Assign { id, expr } => {
+                let expr = resolve_node(expr);
+
+                assignments.push((id.clone(), expr));
+
+                format!("{}", expr)
+            }
         })
         .join("\n")
 }
@@ -37,6 +48,7 @@ fn resolve_node(node: &ast::Node) -> i32 {
         ast::Node::Add { left, right } => resolve_node(left) + resolve_node(right),
         ast::Node::Multiply { left, right } => resolve_node(left) * resolve_node(right),
         ast::Node::Divide { left, right } => resolve_node(left) / resolve_node(right),
+        ast::Node::Assign { id, expr } => resolve_node(expr),
         ast::Node::Number { value } => *value,
     }
 }
