@@ -44,6 +44,12 @@ Term -> Result<Node, ()>:
         right: Box::new($3?) 
       })
     }
+    | Term 'SUBSTRACT' Factor {
+      Ok(Node::Substract {
+        left: Box::new($1?),
+        right: Box::new($3?)
+      })
+    }
     | Factor { $1 }
     ;
 

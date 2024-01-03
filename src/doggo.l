@@ -1,6 +1,7 @@
 %%
 -?[0-9]+ "INTEGER"
 \+ "ADD"
+\- "SUBSTRACT"
 \* "MUL"
 \/* "DIV"
 \( "LPAR"
