@@ -1,5 +1,5 @@
 %%
-[0-9]+ "INTEGER"
+-?[0-9]+ "INTEGER"
 \+ "ADD"
 \* "MUL"
 \/* "DIV"

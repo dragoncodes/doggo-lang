@@ -21,10 +21,9 @@ Assignment -> Result<Node, ()>:
     }
   ;
 
-
 Node -> Result<Node, ()>:
       Node 'ADD' Term {
-        Ok(Node::Add{ 
+        Ok(Node::Add { 
           left: Box::new($1?), 
           right: Box::new($3?) 
         })
@@ -50,22 +49,28 @@ Term -> Result<Node, ()>:
 
 Factor -> Result<Node, ()>:
       'LPAR' Node 'RPAR' { $2 }
-    | 'INTEGER' { 
+    | 'INTEGER' {
         match $1.map_err(|err| format!("Parsing Error: {}", err)) {
             Ok(s) => {
               let s = $lexer.span_str(s.span());
               match s.parse::<i32>() {
                   Ok(n_val) => Ok(Node::Number{ value: n_val }),
-                  Err(_) => Err(())
+                  Err(_) => {
+                    Err(())
+                  }
               }
             }
             Err(_) => Err(())
         }
       }
-    ;
+      | 'ID' { 
+        Ok(Node::Reference { id: $lexer.span_str($1.unwrap().span()).to_string()  })
+      }
+      ;
 %%
 use crate::ast::Node;
 
+/// $lexer.span_str($1.unwrap().span()).to_string()
 /// Flatten `rhs` into `lhs`.
 fn flattenr<T>(lhs: Result<Vec<T>, ()>, rhs: Result<T, ()>) -> Result<Vec<T>, ()> {
     let mut flt = lhs?;
